@@ -26,20 +26,25 @@ const FightWithOutcome = ({ markdown }) => {
       {markdown.map(e => {
         switch (e) {
           case "soldier":
-            return <Soldier color="black" />;
+            return <Soldier key={nanoid(10)} color="black" />;
           case "sword":
-            return <Swords size={30} />;
+            return <Swords key={nanoid(10)} size={30} />;
           case "bomb":
-            return <Bomb size={30} />;
+            return <Bomb key={nanoid(10)} size={30} />;
           case "skull":
-            return <Skull size={30} />;
+            return <Skull key={nanoid(10)} size={30} />;
           case "medal":
-            return <Medal size={30} />;
+            return <Medal key={nanoid(10)} size={30} />;
           case "flag":
-            return <Flag />;
+            return <Flag key={nanoid(10)} />;
           default:
             return (
-              <span style={{ fontWeight: "bold", fontSize: "16px" }}>{e}</span>
+              <span
+                key={nanoid(10)}
+                style={{ fontWeight: "bold", fontSize: "16px" }}
+              >
+                {e}
+              </span>
             );
         }
       })}
@@ -84,11 +89,11 @@ export const HelpPanel = () => {
         >
           {/* prettier-ignore */}
           <div style={{ display: "flex", flexDirection: "column" }}>
-        <FightWithOutcome key={1} markdown={['soldier','sword','soldier','=','soldier','>','skull']}/>
-        <FightWithOutcome key={2} markdown={['[1]','sword','[10]','=','[1]','+','skull']}/>
-        <FightWithOutcome key={3} markdown={['soldier','sword','bomb','=','skull','+','bomb']}/>
-        <FightWithOutcome key={4} markdown={['[3]','sword','bomb','=','[3]','+','skull']}/>
-        <FightWithOutcome key={5} markdown={['soldier','sword','flag','=','medal']}/>
+        <FightWithOutcome markdown={['soldier','sword','soldier','=','soldier','>','skull']}/>
+        <FightWithOutcome markdown={['[1]','sword','[10]','=','[1]','+','skull']}/>
+        <FightWithOutcome markdown={['soldier','sword','bomb','=','skull','+','bomb']}/>
+        <FightWithOutcome markdown={['[3]','sword','bomb','=','[3]','+','skull']}/>
+        <FightWithOutcome markdown={['soldier','sword','flag','=','medal']}/>
       </div>
         </div>
       )}

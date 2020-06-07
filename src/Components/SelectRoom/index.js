@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
-import "../../../style/join.css";
+import "../../style/join.css";
 
 import { useDispatch, useSelector } from "react-redux";
 import { changeScreen, SCREEN, setRoomNumber } from "../../Store/actions";

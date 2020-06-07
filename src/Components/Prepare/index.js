@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
-import "../../../style/game.css";
+import "../../style/game.css";
 import { nanoid } from "nanoid";
 
 import { STARTING_SET } from "../../Store/appStatusReducer";

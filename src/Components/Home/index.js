@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
-import "../../../style/App.css";
+import "../../style/App.css";
 import { nanoid } from "nanoid";
 
 import { useDispatch, useSelector } from "react-redux";

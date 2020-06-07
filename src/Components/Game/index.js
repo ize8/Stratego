@@ -14,7 +14,7 @@ import {
   updateItem
 } from "../../Store/actions";
 
-import "../../../style/App.css";
+import "../../style/App.css";
 import { Fight } from "../Fight";
 import { Victory } from "../Victory";
 import { HelpPanel } from "../HelpPanel";
