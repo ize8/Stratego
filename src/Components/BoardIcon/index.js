@@ -2,8 +2,8 @@ import React from "react";
 import { Flag } from "react-feather";
 import { PLAYER } from "../../Store/actions";
 import { Bomb } from "./Bomb";
-import { Tomb } from "./Tomb";
 import { Soldier } from "./Soldier";
+import { Skull } from "./Skull";
 
 export const BoardIcon = ({
   item,
@@ -13,7 +13,7 @@ export const BoardIcon = ({
 }) => {
   //hide the enemy soldiers! ..or show graves for dead ones
   if (hidden) {
-    if (item?.dead) return <Tomb size={30} />;
+    if (item?.dead) return <Skull size={30} />;
     return <Soldier color={color(item)} size={25} />;
   }
   const num = parseInt(item?.type, 10);

@@ -17,6 +17,7 @@ import {
 import "../../../style/App.css";
 import { Fight } from "../Fight";
 import { Victory } from "../Victory";
+import { HelpPanel } from "../HelpPanel";
 
 export const Game = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,23 @@ export const Game = () => {
   useEffect(() => {
     if (thereIsAFight) setTimeout(() => setThereIsAFight(false), 3000);
   }, [thereIsAFight]);
+
+  //if a player looses all soldiers, then the other wins
+  useEffect(() => {
+    if (!hasMoves(PLAYER.PLAYER1))
+      displayVictory({
+        win: true,
+        winner: PLAYER.PLAYER2
+      });
+    if (!hasMoves(PLAYER.PLAYER2))
+      displayVictory({
+        win: true,
+        winner: PLAYER.PLAYER1
+      });
+  }, [items]);
+
+  const hasMoves = player =>
+    items.find(e => !e.dead && !isNaN(e.type) && e.owner === player);
 
   const quitGame = () => {
     dispatch(setRoomNumber(null));
@@ -298,19 +316,24 @@ export const Game = () => {
           onClick={() => dispatch(changeScreen(SCREEN.HOME))}
         />
       )}
-      {thereIsAFight && (
-        <Fight
-          attacker={fightDetails.attacker}
-          victim={fightDetails.victim}
-          result={fightDetails.result}
-        />
-      )}
-      <Hand player={PLAYER.PLAYER2} onSelected={() => {}} />
-      <Board
-        onClickedBoard={onClickedBoard}
-        highlightedElements={highlighted}
-      />
-      <Hand player={PLAYER.PLAYER1} onSelected={() => {}} />
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div>
+          {thereIsAFight && (
+            <Fight
+              attacker={fightDetails.attacker}
+              victim={fightDetails.victim}
+              result={fightDetails.result}
+            />
+          )}
+          <Hand player={PLAYER.PLAYER2} onSelected={() => {}} />
+          <Board
+            onClickedBoard={onClickedBoard}
+            highlightedElements={highlighted}
+          />
+          <Hand player={PLAYER.PLAYER1} onSelected={() => {}} />
+        </div>
+        <HelpPanel />
+      </div>
       <Button
         variant="primary"
         size="lg"

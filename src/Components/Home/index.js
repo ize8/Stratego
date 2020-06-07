@@ -1,14 +1,72 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
 import "../../../style/App.css";
 import { nanoid } from "nanoid";
 
-import { useDispatch } from "react-redux";
-import { changeScreen, SCREEN, setRoomNumber } from "../../Store/actions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changeScreen,
+  SCREEN,
+  setRoomNumber,
+  updateItems,
+  updateBoard,
+  updateHand1,
+  updateHand2
+} from "../../Store/actions";
 
 export const Home = () => {
   const dispatch = useDispatch();
+  const boardDim = useSelector(state => state.app.boardDim);
+
+  //generates an empty board array
+  /*
+  board item : {id: ID, row:number, col:number, itemId:ID|null} 
+  */
+  const genEmptyBoard = () => {
+    let res = [];
+    for (let row = 0; row < boardDim.rows; row++) {
+      for (let col = 0; col < boardDim.columns; col++) {
+        res = [
+          ...res,
+          {
+            id: nanoid(10),
+            row: row,
+            col: col
+          }
+        ];
+      }
+    }
+    return res;
+  };
+
+  //generates an empty hand array
+  /*
+hand item : {id: ID, highlighted:Bool, itemId:ID|null} 
+*/
+  const genEmptyHand = () => {
+    let res = [];
+    for (let row = 0; row < 2; row++) {
+      for (let col = 0; col < boardDim.columns; col++) {
+        res = [
+          ...res,
+          {
+            id: nanoid(10),
+            highlighted: false
+          }
+        ];
+      }
+    }
+    return res;
+  };
+
+  useEffect(() => {
+    console.log("Back to home...washing hands and items!");
+    dispatch(updateItems([]));
+    dispatch(updateBoard(genEmptyBoard()));
+    dispatch(updateHand1(genEmptyHand()));
+    dispatch(updateHand2(genEmptyHand()));
+  }, []);
 
   const startNewGame = () => {
     dispatch(setRoomNumber(nanoid(5)));
