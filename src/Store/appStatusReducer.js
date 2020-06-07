@@ -3,7 +3,8 @@ import {
   SCREEN,
   SET_ROOM_NUMBER,
   PLAYER,
-  SWITCH_PLAYER
+  SWITCH_PLAYER,
+  SET_ACTIVE_PLAYER
 } from "./actions";
 
 /*
@@ -95,6 +96,11 @@ function reducer(state = initState, action) {
           state.activePlayer === PLAYER.PLAYER1
             ? PLAYER.PLAYER2
             : PLAYER.PLAYER1
+      };
+    case SET_ACTIVE_PLAYER:
+      return {
+        ...state,
+        activePlayer: action.payload
       };
     default:
       return state;

@@ -9,10 +9,12 @@ import {
   changeScreen,
   SCREEN,
   setRoomNumber,
+  setActivePlayer,
   updateItems,
   updateBoard,
   updateHand1,
-  updateHand2
+  updateHand2,
+  PLAYER
 } from "../../Store/actions";
 
 export const Home = () => {
@@ -62,6 +64,7 @@ hand item : {id: ID, highlighted:Bool, itemId:ID|null}
 
   useEffect(() => {
     console.log("Back to home...washing hands and items!");
+    dispatch(setActivePlayer(PLAYER.PLAYER1));
     dispatch(updateItems([]));
     dispatch(updateBoard(genEmptyBoard()));
     dispatch(updateHand1(genEmptyHand()));

@@ -19,6 +19,7 @@ export const UPDATE_HAND1 = "UPDATE_HAND1";
 export const UPDATE_HAND2 = "UPDATE_HAND2";
 export const UPDATE_HIGHLIGHTED = "UPDATE_HIGHLIGHTED";
 export const SWITCH_PLAYER = "SWITCH_PLAYER";
+export const SET_ACTIVE_PLAYER = "SET_ACTIVE_PLAYER";
 
 export const changeScreen = screenId => ({
   type: CHANGE_SCREEN,
@@ -62,4 +63,9 @@ export const updateHighlighted = list => ({
 
 export const switchPlayer = () => ({
   type: SWITCH_PLAYER
+});
+
+export const setActivePlayer = player => ({
+  type: SET_ACTIVE_PLAYER,
+  payload: player
 });
