@@ -51,6 +51,7 @@ const FightWithOutcome = ({ markdown }) => {
     </div>
   );
 };
+
 export const HelpPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
 

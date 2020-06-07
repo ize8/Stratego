@@ -50,6 +50,8 @@ export const Game = () => {
 
   //if a player looses all soldiers, then the other wins
   useEffect(() => {
+    if (!hasMoves(PLAYER.PLAYER1)) console.log("player1 has no moves!");
+    if (!hasMoves(PLAYER.PLAYER2)) console.log("player2 has no moves!");
     if (!hasMoves(PLAYER.PLAYER1))
       displayVictory({
         win: true,
@@ -63,7 +65,9 @@ export const Game = () => {
   }, [items]);
 
   const hasMoves = player =>
-    items.find(e => !e.dead && !isNaN(e.type) && e.owner === player);
+    items.find(
+      e => !e.dead && !isNaN(parseInt(e.type, 10)) && e.owner === player
+    );
 
   const quitGame = () => {
     dispatch(setRoomNumber(null));
@@ -223,6 +227,7 @@ export const Game = () => {
   };
 
   const displayVictory = result => {
+    setFightDetails({ result: result });
     setThereIsAFight(false);
     setIsItOver(true);
   };
