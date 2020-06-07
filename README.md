@@ -1,0 +1,2 @@
+# Stratego
+Created with CodeSandbox
