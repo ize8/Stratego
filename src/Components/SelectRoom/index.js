@@ -5,6 +5,7 @@ import "../../style/join.css";
 
 import { useDispatch, useSelector } from "react-redux";
 import { changeScreen, SCREEN, setRoomNumber } from "../../Store/actions";
+import { joinRoom, setBoardDataReceived } from "../../Store/networkActions";
 
 export const SelectRoom = () => {
   const roomCode = useRef(null);
@@ -12,9 +13,18 @@ export const SelectRoom = () => {
   const roomNumber = useSelector(state => state.app.roomNumber);
   const [inputNumber, setInputNumber] = useState(0);
 
-  const startGame = () => {
-    if (!roomNumber) dispatch(setRoomNumber(Number(inputNumber)));
-    dispatch(changeScreen(SCREEN.PREPARE));
+  const startGame = async () => {
+    if (!roomNumber) {
+      try {
+        setBoardDataReceived(false);
+        const res = await dispatch(joinRoom(inputNumber));
+        console.log("Joined room!", res);
+      } catch (err) {
+        alert(`Server ERROR!\n${err.message}`);
+      }
+    } else {
+      dispatch(changeScreen(SCREEN.PREPARE));
+    }
   };
 
   const cancel = () => {
@@ -48,13 +58,14 @@ export const SelectRoom = () => {
     <div className="App2">
       {roomNumber ? (
         <article>
-          <h2 className="title">Room number: </h2>
-          <input
+          <h2 className="title">Room ID: </h2>
+          <textarea
             className="roomNumber"
             type="text"
             ref={roomCode}
             value={roomNumber}
             readOnly
+            style={{ fontSize: "15px", resize: "none", textAlign: "center" }}
           />
           <Button variant="primary" id="copy" onClick={onCopy}>
             Copy
@@ -63,7 +74,7 @@ export const SelectRoom = () => {
       ) : (
         <section>
           <article>
-            <h2 className="title">Enter room number: </h2>
+            <h2 className="title">Enter room ID: </h2>
             <input
               className="roomNumber"
               type="text"
@@ -81,7 +92,7 @@ export const SelectRoom = () => {
           className="control"
           onClick={startGame}
         >
-          Start game
+          {roomNumber ? "Start Game" : "Join Game"}
         </Button>
         <Button
           variant="primary"

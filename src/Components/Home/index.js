@@ -16,10 +16,12 @@ import {
   updateHand2,
   PLAYER
 } from "../../Store/actions";
+import { createNewRoom } from "../../Store/networkActions";
 
 export const Home = () => {
   const dispatch = useDispatch();
   const boardDim = useSelector(state => state.app.boardDim);
+  const socket = useSelector(state => state.socket.io);
 
   //generates an empty board array
   /*
@@ -71,9 +73,13 @@ hand item : {id: ID, highlighted:Bool, itemId:ID|null}
     dispatch(updateHand2(genEmptyHand()));
   }, []);
 
-  const startNewGame = () => {
-    dispatch(setRoomNumber(nanoid(5)));
-    dispatch(changeScreen(SCREEN.SELECT_ROOM));
+  const startNewGame = async () => {
+    try {
+      const res = await dispatch(createNewRoom());
+      console.log("Room created:", res);
+    } catch (err) {
+      alert(`Server ERROR!\n${err.message}`);
+    }
   };
 
   const joinRoom = () => {

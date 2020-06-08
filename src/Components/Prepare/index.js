@@ -25,6 +25,9 @@ export const Prepare = () => {
   const hand1 = useSelector(state => state.board.hand1);
   const hand2 = useSelector(state => state.board.hand2);
   const boardDim = useSelector(state => state.app.boardDim);
+  const boardDataReceived = useSelector(
+    state => state.socket.boardDataReceived
+  );
   const highlightedElements = useSelector(state => state.board.highlighted);
   const activePlayer = useSelector(state => state.app.activePlayer);
 
@@ -32,11 +35,24 @@ export const Prepare = () => {
   const [isHandEmpty, setIsHandEmpty] = useState(false);
 
   useEffect(() => {
-    const player1Items = genStartingSet(PLAYER.PLAYER1, false); //SWITCH BACK TO FALSE!!
-    const player2Items = genStartingSet(PLAYER.PLAYER2, true);
-    dispatch(updateItems(player1Items.concat(player2Items)));
-    resetHighlights();
+    if (activePlayer === PLAYER.PLAYER1) {
+      console.log("Creating Player1's board!");
+      const player1Items = genStartingSet(PLAYER.PLAYER1, true); //SWITCH BACK TO FALSE!!
+      const player2Items = genStartingSet(PLAYER.PLAYER2, true); //SWITCH BACK TO FALSE!!
+      dispatch(updateItems(player1Items.concat(player2Items)));
+      resetHighlights();
+    }
   }, []);
+
+  useEffect(() => {
+    if (boardDataReceived) {
+      console.log("Creating Player2's board!");
+      const player1Items = genStartingSet(PLAYER.PLAYER1, true); //SWITCH BACK TO FALSE!!
+      const player2Items = genStartingSet(PLAYER.PLAYER2, true); //SWITCH BACK TO FALSE!!
+      dispatch(updateItems(player1Items.concat(player2Items)));
+      resetHighlights();
+    }
+  }, [boardDataReceived]);
 
   const cancel = () => {
     dispatch(setRoomNumber(null));
