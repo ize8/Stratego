@@ -32,7 +32,7 @@ export const Prepare = () => {
   const [isHandEmpty, setIsHandEmpty] = useState(false);
 
   useEffect(() => {
-    const player1Items = genStartingSet(PLAYER.PLAYER1, true); //SWITCH BACK TO FALSE!!
+    const player1Items = genStartingSet(PLAYER.PLAYER1, false); //SWITCH BACK TO FALSE!!
     const player2Items = genStartingSet(PLAYER.PLAYER2, true);
     dispatch(updateItems(player1Items.concat(player2Items)));
     resetHighlights();
