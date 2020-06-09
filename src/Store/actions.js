@@ -14,12 +14,19 @@ export const CHANGE_SCREEN = "CHANGE_SCREEN";
 export const SET_ROOM_NUMBER = "SET_ROOM_NUMBER";
 export const UPDATE_ITEMS = "UPDATE_ITEMS";
 export const UPDATE_ITEM = "UPDATE_ITEM";
+export const UPDATE_PLAYER_ITEMS = "UPDATE_PLAYER_ITEMS";
 export const UPDATE_BOARD = "UPDATE_BOARD";
 export const UPDATE_HAND1 = "UPDATE_HAND1";
 export const UPDATE_HAND2 = "UPDATE_HAND2";
 export const UPDATE_HIGHLIGHTED = "UPDATE_HIGHLIGHTED";
 export const SWITCH_PLAYER = "SWITCH_PLAYER";
 export const SET_ACTIVE_PLAYER = "SET_ACTIVE_PLAYER";
+export const SET_WAITING_FOR_ENEMY = "SET_WAITING_FOR_ENEMY";
+
+export const setWaitingForEnemy = waiting => ({
+  type: SET_WAITING_FOR_ENEMY,
+  payload: waiting
+});
 
 export const changeScreen = screenId => ({
   type: CHANGE_SCREEN,
@@ -39,6 +46,11 @@ export const updateItems = items => ({
 export const updateItem = item => ({
   type: UPDATE_ITEM,
   payload: item
+});
+
+export const updatePlayerItems = (player, items) => ({
+  type: UPDATE_PLAYER_ITEMS,
+  payload: { player: player, items: items }
 });
 
 export const updateBoard = board => ({

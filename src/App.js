@@ -6,11 +6,20 @@ import { Game } from "./Components/Game";
 import { Home } from "./Components/Home";
 import { Prepare } from "./Components/Prepare";
 import { SelectRoom } from "./Components/SelectRoom";
-import { SCREEN } from "./Store/actions";
+import {
+  SCREEN,
+  PLAYER,
+  updateItems,
+  updatePlayerItems,
+  setWaitingForEnemy
+} from "./Store/actions";
 import {
   setSocketIoCient,
   sendBoardData,
-  processBoardDataReceived
+  processBoardDataReceived,
+  setPlayer1Ready,
+  setPlayer2Ready,
+  setMissedFightInfo
 } from "./Store/networkActions";
 
 export default function App() {
@@ -48,14 +57,36 @@ export default function App() {
 
       socket.on("action-sent", data => {
         console.log("Action received:", data); // true
-        if (data.action.type === "boardData") {
-          dispatch(
-            processBoardDataReceived({
-              board: data.action.data.board,
-              hand1: data.action.data.hand1,
-              hand2: data.action.data.hand2
-            })
-          );
+        switch (data.action.type) {
+          case "fightData":
+            console.log("Fight info received!", data.action.data);
+            dispatch(setMissedFightInfo(data.action.data));
+            break;
+          case "itemsData":
+            dispatch(updateItems(data.action.data));
+            dispatch(setWaitingForEnemy(false));
+            break;
+          case "boardData":
+            dispatch(
+              processBoardDataReceived({
+                board: data.action.data.board,
+                hand1: data.action.data.hand1,
+                hand2: data.action.data.hand2
+              })
+            );
+            break;
+          case "playerReady":
+            console.log("playerReady:", data.action);
+            const playerToUpdate = data.action.data.player;
+            dispatch(updatePlayerItems(playerToUpdate, data.action.data.items));
+            dispatch(
+              playerToUpdate === PLAYER.PLAYER1
+                ? setPlayer1Ready()
+                : setPlayer2Ready()
+            );
+            break;
+          default:
+            break;
         }
       });
     };

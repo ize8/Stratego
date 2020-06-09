@@ -4,7 +4,8 @@ import {
   UPDATE_HAND1,
   UPDATE_HAND2,
   UPDATE_HIGHLIGHTED,
-  UPDATE_ITEM
+  UPDATE_ITEM,
+  UPDATE_PLAYER_ITEMS
 } from "./actions";
 
 const initState = {
@@ -16,6 +17,7 @@ const initState = {
 };
 
 function reducer(state = initState, action) {
+  let temp = [];
   switch (action.type) {
     case UPDATE_ITEMS:
       return {
@@ -23,10 +25,16 @@ function reducer(state = initState, action) {
         items: action.payload
       };
     case UPDATE_ITEM:
-      const temp = state.items.filter(e => e.id !== action.payload.id);
+      temp = state.items.filter(e => e.id !== action.payload.id);
       return {
         ...state,
         items: [...temp, action.payload]
+      };
+    case UPDATE_PLAYER_ITEMS:
+      temp = state.items.filter(e => e.owner !== action.payload.player);
+      return {
+        ...state,
+        items: [...temp, ...action.payload.items]
       };
     case UPDATE_BOARD:
       return {

@@ -13,10 +13,12 @@ import {
   setRoomNumber,
   updateItems,
   PLAYER,
-  updateHighlighted
+  updateHighlighted,
+  updatePlayerItems
 } from "../../Store/actions";
 import { Board } from "../Board";
 import { Hand } from "../Hand";
+import { sendPlayerReadySignalToEnemy } from "../../Store/networkActions";
 
 export const Prepare = () => {
   const dispatch = useDispatch();
@@ -25,21 +27,28 @@ export const Prepare = () => {
   const hand1 = useSelector(state => state.board.hand1);
   const hand2 = useSelector(state => state.board.hand2);
   const boardDim = useSelector(state => state.app.boardDim);
+  const roomNumber = useSelector(state => state.app.roomNumber);
+  const activePlayer = useSelector(state => state.app.activePlayer);
+  const enemyReady =
+    activePlayer === PLAYER.PLAYER1
+      ? useSelector(state => state.socket.player2Ready)
+      : useSelector(state => state.socket.player1Ready);
+
   const boardDataReceived = useSelector(
     state => state.socket.boardDataReceived
   );
   const highlightedElements = useSelector(state => state.board.highlighted);
-  const activePlayer = useSelector(state => state.app.activePlayer);
 
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [isHandEmpty, setIsHandEmpty] = useState(false);
+  const [amIReady, setAmIReady] = useState(false);
 
   useEffect(() => {
     if (activePlayer === PLAYER.PLAYER1) {
       console.log("Creating Player1's board!");
       const player1Items = genStartingSet(PLAYER.PLAYER1, true); //SWITCH BACK TO FALSE!!
-      const player2Items = genStartingSet(PLAYER.PLAYER2, true); //SWITCH BACK TO FALSE!!
-      dispatch(updateItems(player1Items.concat(player2Items)));
+      //const player2Items = genStartingSet(PLAYER.PLAYER2, true); //SWITCH BACK TO FALSE!!
+      dispatch(updatePlayerItems(PLAYER.PLAYER1, player1Items));
       resetHighlights();
     }
   }, []);
@@ -47,12 +56,19 @@ export const Prepare = () => {
   useEffect(() => {
     if (boardDataReceived) {
       console.log("Creating Player2's board!");
-      const player1Items = genStartingSet(PLAYER.PLAYER1, true); //SWITCH BACK TO FALSE!!
+      //const player1Items = genStartingSet(PLAYER.PLAYER1, true); //SWITCH BACK TO FALSE!!
       const player2Items = genStartingSet(PLAYER.PLAYER2, true); //SWITCH BACK TO FALSE!!
-      dispatch(updateItems(player1Items.concat(player2Items)));
+      dispatch(updatePlayerItems(PLAYER.PLAYER2, player2Items));
       resetHighlights();
     }
   }, [boardDataReceived]);
+
+  useEffect(() => {
+    if (amIReady && enemyReady) {
+      console.log("Both players are ready!!");
+      dispatch(changeScreen(SCREEN.GAME));
+    }
+  }, [amIReady, enemyReady]);
 
   const cancel = () => {
     dispatch(setRoomNumber(null));
@@ -60,7 +76,20 @@ export const Prepare = () => {
   };
 
   const startGame = () => {
-    dispatch(changeScreen(SCREEN.GAME));
+    setAmIReady(true);
+    dispatch(
+      sendPlayerReadySignalToEnemy(
+        roomNumber,
+        activePlayer,
+        items.filter(e => e.owner === activePlayer)
+      )
+    )
+      .then(res => {
+        console.log("Ready signal sent to enemy!", res);
+      })
+      .catch(err => {
+        console.log("Unable to send ready signal to enemy!", err);
+      });
   };
 
   //run func on elements in respective player's starting field (row 1-2)
@@ -224,25 +253,34 @@ export const Prepare = () => {
         <h2 className="title">Place your players onto the board!</h2>
       </section>
       {activePlayer === PLAYER.PLAYER2 && (
-        <Hand player={PLAYER.PLAYER2} onSelected={onClickedHand} />
+        <Hand
+          player={PLAYER.PLAYER2}
+          onSelected={amIReady ? () => {} : onClickedHand}
+        />
       )}
       <Board
-        onClickedBoard={onClickedBoard}
+        onClickedBoard={amIReady ? () => {} : onClickedBoard}
         highlightedElements={highlightedElements}
       />
       {activePlayer === PLAYER.PLAYER1 && (
-        <Hand player={PLAYER.PLAYER1} onSelected={onClickedHand} />
+        <Hand
+          player={PLAYER.PLAYER1}
+          onSelected={amIReady ? () => {} : onClickedHand}
+        />
       )}
       <section id="startGameControll">
-        <Button
-          variant="primary"
-          size="lg"
-          className="control"
-          disabled={!isHandEmpty}
-          onClick={startGame}
-        >
-          Play
-        </Button>
+        {amIReady || (
+          <Button
+            variant="primary"
+            size="lg"
+            className="control"
+            disabled={!isHandEmpty}
+            onClick={startGame}
+          >
+            Play
+          </Button>
+        )}
+
         <Button
           variant="primary"
           size="lg"
@@ -252,9 +290,15 @@ export const Prepare = () => {
           Cancel
         </Button>
       </section>
-      <section>
-        <h3 className="title">Waiting for opponent...</h3>
-      </section>
+      {enemyReady ? (
+        <h3>{`${
+          activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
+        } is ready for battle!`}</h3>
+      ) : (
+        <h3 className="title">{`${
+          activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
+        } is getting ready!`}</h3>
+      )}
     </div>
   );
 };

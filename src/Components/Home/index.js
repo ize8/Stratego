@@ -21,7 +21,6 @@ import { createNewRoom } from "../../Store/networkActions";
 export const Home = () => {
   const dispatch = useDispatch();
   const boardDim = useSelector(state => state.app.boardDim);
-  const socket = useSelector(state => state.socket.io);
 
   //generates an empty board array
   /*

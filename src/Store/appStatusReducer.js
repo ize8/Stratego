@@ -4,7 +4,8 @@ import {
   SET_ROOM_NUMBER,
   PLAYER,
   SWITCH_PLAYER,
-  SET_ACTIVE_PLAYER
+  SET_ACTIVE_PLAYER,
+  SET_WAITING_FOR_ENEMY
 } from "./actions";
 
 /*
@@ -74,7 +75,8 @@ const initState = {
     rows: 6,
     columns: 6
   },
-  activePlayer: PLAYER.PLAYER1 //the active player
+  activePlayer: PLAYER.PLAYER1, //the active player
+  waitingForEnemy: false
 };
 
 function reducer(state = initState, action) {
@@ -97,6 +99,8 @@ function reducer(state = initState, action) {
             ? PLAYER.PLAYER2
             : PLAYER.PLAYER1
       };
+    case SET_WAITING_FOR_ENEMY:
+      return { ...state, waitingForEnemy: action.payload };
     case SET_ACTIVE_PLAYER:
       return {
         ...state,

@@ -10,14 +10,18 @@ import {
   setRoomNumber,
   updateHighlighted,
   PLAYER,
-  switchPlayer,
-  updateItem
+  updateItem,
+  setWaitingForEnemy
 } from "../../Store/actions";
 
 import "../../style/App.css";
 import { Fight } from "../Fight";
 import { Victory } from "../Victory";
 import { HelpPanel } from "../HelpPanel";
+import {
+  sendItemsToEnemy,
+  sendFightInfoToEnemy
+} from "../../Store/networkActions";
 
 export const Game = () => {
   const dispatch = useDispatch();
@@ -29,10 +33,13 @@ export const Game = () => {
   const boardDim = useSelector(state => state.app.boardDim);
   const hand1 = useSelector(state => state.board.hand1);
   const hand2 = useSelector(state => state.board.hand2);
+  const waitingForEnemy = useSelector(state => state.app.waitingForEnemy);
+  const missedFightInfo = useSelector(state => state.socket.missedFightInfo);
 
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const [thereIsAFight, setThereIsAFight] = useState(false); //true if there is a fight ...
   const [isItOver, setIsItOver] = useState(false); //true if there is a Victory
+
+  const [thereIsAFight, setThereIsAFight] = useState(false); //true if there is a fight ...
   const [fightDetails, setFightDetails] = useState({
     attacker: null,
     victim: null,
@@ -41,12 +48,28 @@ export const Game = () => {
 
   useEffect(() => {
     console.log("Room Number:", roomNumber);
+    //Player1 starts first ...
+    if (activePlayer === PLAYER.PLAYER1) dispatch(setWaitingForEnemy(false));
+    else dispatch(setWaitingForEnemy(true));
     resetHighlights();
   }, []);
 
   useEffect(() => {
     if (thereIsAFight) setTimeout(() => setThereIsAFight(false), 3000);
   }, [thereIsAFight]);
+
+  useEffect(() => {
+    if (missedFightInfo) {
+      console.log("Missed fight!", missedFightInfo);
+      if (missedFightInfo?.win) displayVictory(missedFightInfo?.result);
+      else
+        displayFight(
+          missedFightInfo?.attacker,
+          missedFightInfo?.victim,
+          missedFightInfo?.result
+        );
+    }
+  }, [missedFightInfo]);
 
   //if a player looses all soldiers, then the other wins
   useEffect(() => {
@@ -234,11 +257,12 @@ export const Game = () => {
 
   //show the splash screen
   const displayFight = (attacker, victim, result) => {
-    setFightDetails({
+    const details = {
       attacker: attacker,
       victim: victim,
       result: result
-    });
+    };
+    setFightDetails(details);
     setThereIsAFight(true);
   };
 
@@ -259,6 +283,12 @@ export const Game = () => {
     });
   };
 
+  const finishedRound = () => {
+    resetHighlights();
+    dispatch(setWaitingForEnemy(true));
+    dispatch(sendItemsToEnemy(roomNumber));
+  };
+
   //process the clicks on the playboard
   const onClickedBoard = (row, col) => {
     const item = getItemByPos(row, col);
@@ -274,13 +304,22 @@ export const Game = () => {
         const result = concludeFight(attacker, item);
         logFightResult(result);
         displayFight(attacker, item, result); //display fight details on screen
-        if (result.win) displayVictory(result); //finish the game
+        dispatch(
+          sendFightInfoToEnemy(roomNumber, {
+            attacker: attacker,
+            victim: item,
+            result: result
+          })
+        );
+        if (result.win) {
+          dispatch(sendFightInfoToEnemy(roomNumber, result));
+          displayVictory(result); //finish the game
+        }
         disposeTheBodies(result); //remove the dead
         if (result.lives[0]?.id === attacker.id)
           //if the attacker lives, then move him ahead
           setItemPosition(attacker.id, getBoardItemByPos(row, col).id);
-        resetHighlights();
-        dispatch(switchPlayer());
+        finishedRound();
       } else if (
         item.owner === activePlayer &&
         !isNaN(parseInt(item.type, 10))
@@ -301,8 +340,7 @@ export const Game = () => {
       if (!highlighted.includes(boardItem.id)) return;
       console.log("Moving item!");
       setItemPosition(selectedItemId, boardItem.id);
-      resetHighlights();
-      dispatch(switchPlayer());
+      finishedRound();
     }
   };
 
@@ -321,6 +359,7 @@ export const Game = () => {
           onClick={() => dispatch(changeScreen(SCREEN.HOME))}
         />
       )}
+      {waitingForEnemy && <h2>Waiting for Enemy ...</h2>}
       <div style={{ display: "flex", alignItems: "center" }}>
         <div>
           {thereIsAFight && (
@@ -330,12 +369,16 @@ export const Game = () => {
               result={fightDetails.result}
             />
           )}
-          <Hand player={PLAYER.PLAYER2} onSelected={() => {}} />
+          {activePlayer === PLAYER.PLAYER2 && (
+            <Hand player={PLAYER.PLAYER2} onSelected={() => {}} />
+          )}
           <Board
-            onClickedBoard={onClickedBoard}
+            onClickedBoard={waitingForEnemy ? () => {} : onClickedBoard}
             highlightedElements={highlighted}
           />
-          <Hand player={PLAYER.PLAYER1} onSelected={() => {}} />
+          {activePlayer === PLAYER.PLAYER1 && (
+            <Hand player={PLAYER.PLAYER1} onSelected={() => {}} />
+          )}
         </div>
         <HelpPanel />
       </div>

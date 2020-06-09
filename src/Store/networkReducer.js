@@ -3,7 +3,8 @@ import {
   SOCKET_CREATE_ROOM,
   SOCKET_PLAYER2_READY,
   SOCKET_PLAYER1_READY,
-  SOCKET_SET_BOARD_DATA_RECEIVED
+  SOCKET_SET_BOARD_DATA_RECEIVED,
+  SOCKET_SET_MISSED_FIGHT_INFO
 } from "./networkActions";
 
 const initState = {
@@ -11,7 +12,8 @@ const initState = {
   io: null,
   boardDataReceived: false,
   player1Ready: false,
-  player2Ready: false
+  player2Ready: false,
+  missedFightInfo: null
 };
 
 function reducer(state = initState, action) {
@@ -21,6 +23,11 @@ function reducer(state = initState, action) {
       return {
         ...state,
         io: action.payload
+      };
+    case SOCKET_SET_MISSED_FIGHT_INFO:
+      return {
+        ...state,
+        missedFightInfo: action.payload
       };
     case SOCKET_SET_BOARD_DATA_RECEIVED:
       return { ...state, boardDataReceived: action.payload };

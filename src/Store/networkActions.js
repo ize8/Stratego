@@ -15,8 +15,12 @@ export const SOCKET_JOIN_ROOM = "SOCKET_JOIN_ROOM";
 export const SOCKET_PLAYER1_READY = "SOCKET_PLAYER1_READY";
 export const SOCKET_PLAYER2_READY = "SOCKET_PLAYER2_READY";
 export const SOCKET_SEND_BOARD_DATA = "SOCKET_SEND_BOARD_DATA";
+export const SOCKET_BOARD_DATA_RECEIVED = "SOCKET_BOARD_DATA_RECEIVED"; //??do I use this ??
 export const SOCKET_SET_BOARD_DATA_RECEIVED = "SOCKET_SET_BOARD_DATA_RECEIVED";
-export const SOCKET_BOARD_DATA_RECEIVED = "SOCKET_BOARD_DATA_RECEIVED";
+export const SOCKET_SEND_ITEMS_TO_ENEMY = "SOCKET_SEND_ITEMS_TO_ENEMY";
+export const SOCKET_SEND_FIGHT_INFO_TO_ENEMY =
+  "SOCKET_SEND_FIGHT_INFO_TO_ENEMY";
+export const SOCKET_SET_MISSED_FIGHT_INFO = "SOCKET_SET_MISSED_FIGHT_INFO";
 
 export const processBoardDataReceived = data => dispatch => {
   console.log("Board Data Received!", data);
@@ -27,6 +31,11 @@ export const processBoardDataReceived = data => dispatch => {
   dispatch(changeScreen(SCREEN.PREPARE));
   dispatch(setBoardDataReceived(true));
 };
+
+export const setMissedFightInfo = fight => ({
+  type: SOCKET_SET_MISSED_FIGHT_INFO,
+  payload: fight
+});
 
 export const setSocketIoCient = client => ({
   type: SET_SOCKETIO_CLIENT,
@@ -49,6 +58,55 @@ export const setPlayer2Ready = (ready = true) => ({
 });
 
 //async actions with thunk....
+
+export const sendFightInfoToEnemy = (roomId, fight) => (dispatch, getState) => {
+  return new Promise((resolve, reject) => {
+    const state = getState();
+    const socket = state.socket.io;
+
+    if (!socket) {
+      reject({ message: "Invalid Socket! Try again a bit later!" });
+    }
+    socket.emit(
+      "sync-action",
+      roomId,
+      { type: "fightData", data: fight },
+      true,
+      data => {
+        if (data.status === "ok") {
+          resolve(data);
+        } else {
+          reject(data);
+        }
+      }
+    );
+  });
+};
+
+export const sendItemsToEnemy = roomId => (dispatch, getState) => {
+  return new Promise((resolve, reject) => {
+    const state = getState();
+    const socket = state.socket.io;
+    const itemsData = state.board.items;
+
+    if (!socket) {
+      reject({ message: "Invalid Socket! Try again a bit later!" });
+    }
+    socket.emit(
+      "sync-action",
+      roomId,
+      { type: "itemsData", data: itemsData },
+      true,
+      data => {
+        if (data.status === "ok") {
+          resolve(data);
+        } else {
+          reject(data);
+        }
+      }
+    );
+  });
+};
 
 export const sendBoardData = roomId => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
@@ -95,6 +153,32 @@ export const createNewRoom = () => (dispatch, getState) => {
         reject(data);
       }
     });
+  });
+};
+
+export const sendPlayerReadySignalToEnemy = (roomId, player, items) => (
+  dispatch,
+  getState
+) => {
+  return new Promise((resolve, reject) => {
+    const state = getState();
+    const socket = state.socket.io;
+    if (!socket) {
+      reject({ message: "Invalid Socket! Try again a bit later!" });
+    }
+    socket.emit(
+      "sync-action",
+      roomId,
+      { type: "playerReady", data: { player: player, items: items } },
+      true,
+      data => {
+        if (data.status === "ok") {
+          resolve(data);
+        } else {
+          reject(data);
+        }
+      }
+    );
   });
 };
 
