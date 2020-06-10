@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import "../../style/App.css";
 import { nanoid } from "nanoid";
+import { SpinnerRoundFilled, SpinnerInfinity } from "spinners-react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,11 +15,12 @@ import {
   updateHand2,
   PLAYER
 } from "../../Store/actions";
-import { createNewRoom, setMissedFightInfo } from "../../Store/networkActions";
+import { createNewRoom } from "../../Store/networkActions";
 
 export const Home = () => {
   const dispatch = useDispatch();
   const boardDim = useSelector(state => state.app.boardDim);
+  const socket = useSelector(state => state.socket.io);
 
   //generates an empty board array
   /*
@@ -94,6 +96,18 @@ hand item : {id: ID, highlighted:Bool, itemId:ID|null}
           <a href="http://www.ketaklub.hu/letoltes/Stratego%20Aoriginal%20Piatnik.pdf">
             <button>Game rules</button>
           </a>
+          {(!socket || !socket.connected) && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <SpinnerRoundFilled color={"salmon"} />
+              <span style={{ fontSize: "10px" }}>connecting to server</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

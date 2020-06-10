@@ -21,6 +21,7 @@ export const SOCKET_SEND_ITEMS_TO_ENEMY = "SOCKET_SEND_ITEMS_TO_ENEMY";
 export const SOCKET_SEND_FIGHT_INFO_TO_ENEMY =
   "SOCKET_SEND_FIGHT_INFO_TO_ENEMY";
 export const SOCKET_SET_MISSED_FIGHT_INFO = "SOCKET_SET_MISSED_FIGHT_INFO";
+export const SOCKET_LEAVE_ROOM = "SOCKET_LEAVE_ROOM";
 
 export const processBoardDataReceived = data => dispatch => {
   console.log("Board Data Received!", data);
@@ -58,6 +59,25 @@ export const setPlayer2Ready = (ready = true) => ({
 });
 
 //async actions with thunk....
+
+export const leaveRoom = roomId => (dispatch, getState) => {
+  return new Promise((resolve, reject) => {
+    const state = getState();
+    const socket = state.socket.io;
+
+    if (!socket) {
+      reject({ message: "Invalid Socket! Try again a bit later!" });
+    }
+    socket.emit("leave-room", roomId, data => {
+      if (data.status === "ok") {
+        dispatch({ type: SOCKET_LEAVE_ROOM });
+        resolve(data);
+      } else {
+        reject(data);
+      }
+    });
+  });
+};
 
 export const sendFightInfoToEnemy = (roomId, fight) => (dispatch, getState) => {
   return new Promise((resolve, reject) => {

@@ -9,15 +9,18 @@ export const SelectRoom = () => {
   const dispatch = useDispatch();
   const roomNumber = useSelector(state => state.app.roomNumber);
   const [inputNumber, setInputNumber] = useState("");
+  const [joining, setJoining] = useState(false);
 
   const startGame = async () => {
     if (!roomNumber) {
       try {
         setBoardDataReceived(false);
+        setJoining(true);
         const res = await dispatch(joinRoom(inputNumber));
         console.log("Joined room!", res);
       } catch (err) {
         alert(`Server ERROR!\n${err.message}`);
+        setJoining(false);
       }
     } else {
       dispatch(changeScreen(SCREEN.PREPARE));
@@ -54,7 +57,7 @@ export const SelectRoom = () => {
   return (
     <div className="page">
       <div className="pageContainer">
-        {roomNumber ? (
+        {roomNumber && !joining ? (
           <div>
             <h2 className="title">Room ID: </h2>
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -80,7 +83,7 @@ export const SelectRoom = () => {
           </div>
         )}
         <div id="gameControll">
-          <button onClick={startGame}>
+          <button onClick={startGame} disabled={joining}>
             {roomNumber ? "Start Game" : "Join Game"}
           </button>
           <button onClick={cancel}>Cancel</button>

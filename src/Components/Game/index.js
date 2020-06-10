@@ -18,7 +18,8 @@ import { Victory } from "../Victory";
 import { HelpPanel } from "../HelpPanel";
 import {
   sendItemsToEnemy,
-  sendFightInfoToEnemy
+  sendFightInfoToEnemy,
+  leaveRoom
 } from "../../Store/networkActions";
 
 export const Game = () => {
@@ -92,6 +93,15 @@ export const Game = () => {
     );
 
   const quitGame = () => {
+    //if we leave, the enemy wins!
+    dispatch(
+      sendFightInfoToEnemy(roomNumber, {
+        win: true,
+        winner:
+          activePlayer === PLAYER.PLAYER1 ? PLAYER.PLAYER2 : PLAYER.PLAYER1
+      })
+    );
+    dispatch(leaveRoom(roomNumber));
     dispatch(setRoomNumber(null));
     dispatch(changeScreen(SCREEN.HOME));
   };
