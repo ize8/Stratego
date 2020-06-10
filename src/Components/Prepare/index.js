@@ -27,7 +27,7 @@ export const Prepare = () => {
   const roomNumber = useSelector(state => state.app.roomNumber);
   const activePlayer = useSelector(state => state.app.activePlayer);
   const player1Ready = useSelector(state => state.socket.player1Ready);
-  const player2Ready = useSelector(state => state.socket.player1Ready);
+  const player2Ready = useSelector(state => state.socket.player2Ready);
   const enemyReady =
     activePlayer === PLAYER.PLAYER1 ? player2Ready : player1Ready;
 
@@ -44,7 +44,6 @@ export const Prepare = () => {
     if (activePlayer === PLAYER.PLAYER1) {
       console.log("Creating Player1's board!");
       const player1Items = genStartingSet(PLAYER.PLAYER1, true); //SWITCH BACK TO FALSE!!
-      //const player2Items = genStartingSet(PLAYER.PLAYER2, true); //SWITCH BACK TO FALSE!!
       dispatch(updatePlayerItems(PLAYER.PLAYER1, player1Items));
       resetHighlights();
     }
@@ -53,7 +52,6 @@ export const Prepare = () => {
   useEffect(() => {
     if (boardDataReceived) {
       console.log("Creating Player2's board!");
-      //const player1Items = genStartingSet(PLAYER.PLAYER1, true); //SWITCH BACK TO FALSE!!
       const player2Items = genStartingSet(PLAYER.PLAYER2, true); //SWITCH BACK TO FALSE!!
       dispatch(updatePlayerItems(PLAYER.PLAYER2, player2Items));
       resetHighlights();
