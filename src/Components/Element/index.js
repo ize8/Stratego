@@ -39,6 +39,7 @@ export const Element = ({ id, onSelect, highlighted = false }) => {
         width: "100%",
         height: "100",
         border: highlighted ? "3px solid gold" : "1px solid gray",
+        boxSizing: "border-box",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
