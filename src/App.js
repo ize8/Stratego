@@ -32,9 +32,7 @@ export default function App() {
         importing Socket.io from CDN in index.html, 
         as it wouldn't work in codesandbox with the standard ES6 import :( 
       */
-      /*eslint-disable*/
-      const socket = io(socketio.url);
-      /*eslint-enable*/
+      const socket = io(socketio.url); /* eslint-disable-line */
       console.log("connecing to server:", socketio.url);
 
       socket.on("connect", () => {
