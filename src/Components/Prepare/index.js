@@ -16,7 +16,10 @@ import {
 } from "../../Store/actions";
 import { Board } from "../Board";
 import { Hand } from "../Hand";
-import { sendPlayerReadySignalToEnemy } from "../../Store/networkActions";
+import {
+  sendPlayerReadySignalToEnemy,
+  leaveRoom
+} from "../../Store/networkActions";
 
 export const Prepare = () => {
   const dispatch = useDispatch();
@@ -72,6 +75,7 @@ export const Prepare = () => {
   }, [amIReady, enemyReady]);
 
   const cancel = () => {
+    dispatch(leaveRoom(roomNumber));
     dispatch(setRoomNumber(null));
     dispatch(changeScreen(SCREEN.HOME));
   };
