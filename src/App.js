@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import io from "./socket.io.js"; //needed to manually copy, as wouldn't work with codesandbox :(
 
 import { Game } from "./Components/Game";
 import { Home } from "./Components/Home";
