@@ -28,6 +28,10 @@ export default function App() {
 
   useEffect(() => {
     const connectToServer = async () => {
+      /*
+        importing Socket.io from CDN in index.html, 
+        as it wouldn't work in codesandbox with the standard ES6 import :( 
+      */
       const socket = io(socketio.url);
       console.log("connecing to server:", socketio.url);
 
