@@ -18,7 +18,8 @@ import {
   processBoardDataReceived,
   setPlayer1Ready,
   setPlayer2Ready,
-  setMissedFightInfo
+  setMissedFightInfo,
+  setPlayer2Joined
 } from "./Store/networkActions";
 
 export default function App() {
@@ -52,6 +53,7 @@ export default function App() {
           .catch(err => {
             console.log("Error when sending board data to Player2!", err);
           });
+        dispatch(setPlayer2Joined(true));
       });
 
       socket.on("player-left", data => {

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "../../style/App.css";
 import { nanoid } from "nanoid";
-import { SpinnerRoundFilled, SpinnerInfinity } from "spinners-react";
+import { SpinnerRoundFilled } from "spinners-react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,7 +15,13 @@ import {
   updateHand2,
   PLAYER
 } from "../../Store/actions";
-import { createNewRoom } from "../../Store/networkActions";
+import {
+  createNewRoom,
+  setPlayer1Ready,
+  setPlayer2Ready,
+  setPlayer2Joined,
+  setMissedFightInfo
+} from "../../Store/networkActions";
 
 export const Home = () => {
   const dispatch = useDispatch();
@@ -70,6 +76,10 @@ hand item : {id: ID, highlighted:Bool, itemId:ID|null}
     dispatch(updateBoard(genEmptyBoard()));
     dispatch(updateHand1(genEmptyHand()));
     dispatch(updateHand2(genEmptyHand()));
+    dispatch(setMissedFightInfo(null));
+    dispatch(setPlayer2Joined(false));
+    dispatch(setPlayer1Ready(false));
+    dispatch(setPlayer2Ready(false));
   }, []);
 
   const startNewGame = async () => {

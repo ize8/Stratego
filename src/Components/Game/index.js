@@ -60,7 +60,7 @@ export const Game = () => {
   useEffect(() => {
     if (missedFightInfo) {
       console.log("Missed fight!", missedFightInfo);
-      if (missedFightInfo?.win) displayVictory(missedFightInfo?.result);
+      if (missedFightInfo?.win) displayVictory(missedFightInfo);
       else
         displayFight(
           missedFightInfo?.attacker,

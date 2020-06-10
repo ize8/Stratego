@@ -22,6 +22,7 @@ export const SOCKET_SEND_FIGHT_INFO_TO_ENEMY =
   "SOCKET_SEND_FIGHT_INFO_TO_ENEMY";
 export const SOCKET_SET_MISSED_FIGHT_INFO = "SOCKET_SET_MISSED_FIGHT_INFO";
 export const SOCKET_LEAVE_ROOM = "SOCKET_LEAVE_ROOM";
+export const SOCKET_SET_PLAYER2_JOINED = "SOCKET_SET_PLAYER2_JOINED";
 
 export const processBoardDataReceived = data => dispatch => {
   console.log("Board Data Received!", data);
@@ -32,6 +33,11 @@ export const processBoardDataReceived = data => dispatch => {
   dispatch(changeScreen(SCREEN.PREPARE));
   dispatch(setBoardDataReceived(true));
 };
+
+export const setPlayer2Joined = joined => ({
+  type: SOCKET_SET_PLAYER2_JOINED,
+  payload: joined
+});
 
 export const setMissedFightInfo = fight => ({
   type: SOCKET_SET_MISSED_FIGHT_INFO,

@@ -4,7 +4,8 @@ import {
   SOCKET_PLAYER2_READY,
   SOCKET_PLAYER1_READY,
   SOCKET_SET_BOARD_DATA_RECEIVED,
-  SOCKET_SET_MISSED_FIGHT_INFO
+  SOCKET_SET_MISSED_FIGHT_INFO,
+  SOCKET_SET_PLAYER2_JOINED
 } from "./networkActions";
 
 const initState = {
@@ -13,6 +14,7 @@ const initState = {
   boardDataReceived: false,
   player1Ready: false,
   player2Ready: false,
+  player2Joined: false,
   missedFightInfo: null
 };
 
@@ -23,6 +25,11 @@ function reducer(state = initState, action) {
       return {
         ...state,
         io: action.payload
+      };
+    case SOCKET_SET_PLAYER2_JOINED:
+      return {
+        ...state,
+        player2Joined: action.payload
       };
     case SOCKET_SET_MISSED_FIGHT_INFO:
       return {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
+import { SpinnerRoundFilled } from "spinners-react";
 
 import { STARTING_SET } from "../../Store/appStatusReducer";
 
@@ -28,6 +29,7 @@ export const Prepare = () => {
   const activePlayer = useSelector(state => state.app.activePlayer);
   const player1Ready = useSelector(state => state.socket.player1Ready);
   const player2Ready = useSelector(state => state.socket.player2Ready);
+  const player2Joined = useSelector(state => state.socket.player2Joined);
   const enemyReady =
     activePlayer === PLAYER.PLAYER1 ? player2Ready : player1Ready;
 
@@ -39,6 +41,10 @@ export const Prepare = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [isHandEmpty, setIsHandEmpty] = useState(false);
   const [amIReady, setAmIReady] = useState(false);
+
+  useEffect(() => {
+    console.log("Player2 joined:", player2Joined);
+  }, [player2Joined]);
 
   useEffect(() => {
     if (activePlayer === PLAYER.PLAYER1) {
@@ -71,6 +77,10 @@ export const Prepare = () => {
   };
 
   const startGame = () => {
+    if (activePlayer === PLAYER.PLAYER1 && !player2Joined) {
+      alert("Please wait until Player2 joins the room!");
+      return;
+    }
     setAmIReady(true);
     dispatch(
       sendPlayerReadySignalToEnemy(
@@ -275,15 +285,33 @@ export const Prepare = () => {
 
           <button onClick={cancel}>Cancel</button>
         </section>
-        {enemyReady ? (
-          <h3>{`${
-            activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
-          } is ready for battle!`}</h3>
-        ) : (
-          <h3 className="title">{`${
-            activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
-          } is getting ready!`}</h3>
-        )}
+        {//display info if Player 2 still hasn't joined the room
+        activePlayer === PLAYER.PLAYER1 && !player2Joined ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <SpinnerRoundFilled color={"salmon"} />
+            <span style={{ fontSize: "10px" }}>
+              waiting for Player2 to join the room
+            </span>
+          </div>
+        ) : null}
+        {//only display this if Player2 joined too or if we are Player2!
+        ((activePlayer === PLAYER.PLAYER1 && player2Joined) ||
+          activePlayer === PLAYER.PLAYER2) &&
+          (enemyReady ? (
+            <h3>{`${
+              activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
+            } is ready for battle!`}</h3>
+          ) : (
+            <h3 className="title">{`${
+              activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
+            } is getting ready!`}</h3>
+          ))}
       </div>
     </div>
   );
