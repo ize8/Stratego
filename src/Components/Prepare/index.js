@@ -26,10 +26,10 @@ export const Prepare = () => {
   const boardDim = useSelector(state => state.app.boardDim);
   const roomNumber = useSelector(state => state.app.roomNumber);
   const activePlayer = useSelector(state => state.app.activePlayer);
+  const player1Ready = useSelector(state => state.socket.player1Ready);
+  const player2Ready = useSelector(state => state.socket.player1Ready);
   const enemyReady =
-    activePlayer === PLAYER.PLAYER1
-      ? useSelector(state => state.socket.player2Ready)
-      : useSelector(state => state.socket.player1Ready);
+    activePlayer === PLAYER.PLAYER1 ? player2Ready : player1Ready;
 
   const boardDataReceived = useSelector(
     state => state.socket.boardDataReceived
