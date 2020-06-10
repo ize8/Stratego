@@ -373,6 +373,8 @@ export const Game = () => {
             <Hand player={PLAYER.PLAYER2} onSelected={() => {}} />
           )}
           <Board
+            hidePlayer1={activePlayer === PLAYER.PLAYER2}
+            hidePlayer2={activePlayer === PLAYER.PLAYER1}
             onClickedBoard={waitingForEnemy ? () => {} : onClickedBoard}
             highlightedElements={highlighted}
           />

@@ -4,7 +4,12 @@ import { checkStartingCount } from "../../Store/appStatusReducer";
 import { Element } from "../Element";
 import { PLAYER } from "../../Store/actions";
 
-export const Board = ({ onClickedBoard, highlightedElements = [] }) => {
+export const Board = ({
+  onClickedBoard,
+  highlightedElements = [],
+  hidePlayer1 = false,
+  hidePlayer2 = false
+}) => {
   const board = useSelector(state => state.board.board);
   const boardDim = useSelector(state => state.app.boardDim);
   const activePlayer = useSelector(state => state.app.activePlayer);
@@ -28,16 +33,18 @@ export const Board = ({ onClickedBoard, highlightedElements = [] }) => {
         alignItems: "center"
       }}
     >
-      <h2
-        className="title"
-        style={
-          activePlayer === PLAYER.PLAYER2
-            ? { ...activePlayerStyle, padding: "5px", color: "blue" }
-            : { padding: "5px", color: "blue" }
-        }
-      >
-        Player2
-      </h2>
+      {hidePlayer2 || (
+        <h2
+          className="title"
+          style={
+            activePlayer === PLAYER.PLAYER2
+              ? { ...activePlayerStyle, padding: "5px", color: "blue" }
+              : { padding: "5px", color: "blue" }
+          }
+        >
+          Player2
+        </h2>
+      )}
       <div
         style={{
           display: "grid",
@@ -57,16 +64,18 @@ export const Board = ({ onClickedBoard, highlightedElements = [] }) => {
           />
         ))}
       </div>
-      <h2
-        className="title"
-        style={
-          activePlayer === PLAYER.PLAYER1
-            ? { ...activePlayerStyle, padding: "5px", color: "red" }
-            : { padding: "5px", color: "red" }
-        }
-      >
-        Player1
-      </h2>
+      {hidePlayer1 || (
+        <h2
+          className="title"
+          style={
+            activePlayer === PLAYER.PLAYER1
+              ? { ...activePlayerStyle, padding: "5px", color: "red" }
+              : { padding: "5px", color: "red" }
+          }
+        >
+          Player1
+        </h2>
+      )}
     </div>
   );
 };

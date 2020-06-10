@@ -259,6 +259,8 @@ export const Prepare = () => {
         />
       )}
       <Board
+      hidePlayer1={activePlayer === PLAYER.PLAYER2}
+      hidePlayer2={activePlayer === PLAYER.PLAYER1}
         onClickedBoard={amIReady ? () => {} : onClickedBoard}
         highlightedElements={highlightedElements}
       />
