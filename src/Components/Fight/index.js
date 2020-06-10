@@ -13,10 +13,11 @@ export const Fight = ({ attacker, victim, result }) => {
     <div
       style={{
         display: "block",
-        position: "fixed",
-        width: "150px",
-        height: "50px",
-        top: "300px",
+        position: "absolute",
+        width: "10rem",
+        height: "2.5rem",
+        top: "15rem",
+        left: "auto",
         backgroundColor: "floralwhite",
         border: "5px solid salmon",
         borderRadius: "20px",
@@ -29,10 +30,9 @@ export const Fight = ({ attacker, victim, result }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          width: "100%",
-          height: "100%",
-          paddingRight: "15px",
-          paddingLeft: "15px"
+          paddingLeft: "1rem",
+          paddingRight: "1rem",
+          height: "100%"
         }}
       >
         <BoardIcon item={attacker} iconColor={getColor(attacker)} />

@@ -1,7 +1,4 @@
 import React, { useState, useRef } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Button } from "react-bootstrap";
-import "../../style/join.css";
 
 import { useDispatch, useSelector } from "react-redux";
 import { changeScreen, SCREEN, setRoomNumber } from "../../Store/actions";
@@ -11,7 +8,7 @@ export const SelectRoom = () => {
   const roomCode = useRef(null);
   const dispatch = useDispatch();
   const roomNumber = useSelector(state => state.app.roomNumber);
-  const [inputNumber, setInputNumber] = useState(0);
+  const [inputNumber, setInputNumber] = useState("");
 
   const startGame = async () => {
     if (!roomNumber) {
@@ -55,25 +52,24 @@ export const SelectRoom = () => {
   };
 
   return (
-    <div className="App2">
-      {roomNumber ? (
-        <article>
-          <h2 className="title">Room ID: </h2>
-          <textarea
-            className="roomNumber"
-            type="text"
-            ref={roomCode}
-            value={roomNumber}
-            readOnly
-            style={{ fontSize: "15px", resize: "none", textAlign: "center" }}
-          />
-          <Button variant="primary" id="copy" onClick={onCopy}>
-            Copy
-          </Button>
-        </article>
-      ) : (
-        <section>
-          <article>
+    <div className="page">
+      <div className="pageContainer">
+        {roomNumber ? (
+          <div>
+            <h2 className="title">Room ID: </h2>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <textarea
+                className="roomNumber"
+                type="text"
+                ref={roomCode}
+                value={roomNumber}
+                readOnly
+              />
+              <button onClick={onCopy}>Copy</button>
+            </div>
+          </div>
+        ) : (
+          <div>
             <h2 className="title">Enter room ID: </h2>
             <input
               className="roomNumber"
@@ -81,29 +77,15 @@ export const SelectRoom = () => {
               value={inputNumber}
               onChange={e => setInputNumber(e.target.value)}
             />
-          </article>
-        </section>
-      )}
-      <section id="gameControll">
-        <Button
-          variant="primary"
-          size="lg"
-          block
-          className="control"
-          onClick={startGame}
-        >
-          {roomNumber ? "Start Game" : "Join Game"}
-        </Button>
-        <Button
-          variant="primary"
-          size="lg"
-          block
-          className="control"
-          onClick={cancel}
-        >
-          Cancel
-        </Button>
-      </section>
+          </div>
+        )}
+        <div id="gameControll">
+          <button onClick={startGame}>
+            {roomNumber ? "Start Game" : "Join Game"}
+          </button>
+          <button onClick={cancel}>Cancel</button>
+        </div>
+      </div>
     </div>
   );
 };

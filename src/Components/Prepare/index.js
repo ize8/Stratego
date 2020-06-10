@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Button } from "react-bootstrap";
-import "../../style/game.css";
 import { nanoid } from "nanoid";
 
 import { STARTING_SET } from "../../Store/appStatusReducer";
@@ -248,59 +245,48 @@ export const Prepare = () => {
   };
 
   return (
-    <div className="App">
-      <section>
-        <h2 className="title">Place your players onto the board!</h2>
-      </section>
-      {activePlayer === PLAYER.PLAYER2 && (
-        <Hand
-          player={PLAYER.PLAYER2}
-          onSelected={amIReady ? () => {} : onClickedHand}
-        />
-      )}
-      <Board
-      hidePlayer1={activePlayer === PLAYER.PLAYER2}
-      hidePlayer2={activePlayer === PLAYER.PLAYER1}
-        onClickedBoard={amIReady ? () => {} : onClickedBoard}
-        highlightedElements={highlightedElements}
-      />
-      {activePlayer === PLAYER.PLAYER1 && (
-        <Hand
-          player={PLAYER.PLAYER1}
-          onSelected={amIReady ? () => {} : onClickedHand}
-        />
-      )}
-      <section id="startGameControll">
-        {amIReady || (
-          <Button
-            variant="primary"
-            size="lg"
-            className="control"
-            disabled={!isHandEmpty}
-            onClick={startGame}
-          >
-            Play
-          </Button>
+    <div className="page">
+      <div className="pageContainer">
+        <section>
+          <h2 className="title">Place your players onto the board!</h2>
+        </section>
+        {activePlayer === PLAYER.PLAYER2 && (
+          <Hand
+            player={PLAYER.PLAYER2}
+            onSelected={amIReady ? () => {} : onClickedHand}
+          />
         )}
+        <Board
+          hidePlayer1={activePlayer === PLAYER.PLAYER2}
+          hidePlayer2={activePlayer === PLAYER.PLAYER1}
+          onClickedBoard={amIReady ? () => {} : onClickedBoard}
+          highlightedElements={highlightedElements}
+        />
+        {activePlayer === PLAYER.PLAYER1 && (
+          <Hand
+            player={PLAYER.PLAYER1}
+            onSelected={amIReady ? () => {} : onClickedHand}
+          />
+        )}
+        <section id="startGameControll">
+          {amIReady || (
+            <button disabled={!isHandEmpty} onClick={startGame}>
+              Play
+            </button>
+          )}
 
-        <Button
-          variant="primary"
-          size="lg"
-          className="control"
-          onClick={cancel}
-        >
-          Cancel
-        </Button>
-      </section>
-      {enemyReady ? (
-        <h3>{`${
-          activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
-        } is ready for battle!`}</h3>
-      ) : (
-        <h3 className="title">{`${
-          activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
-        } is getting ready!`}</h3>
-      )}
+          <button onClick={cancel}>Cancel</button>
+        </section>
+        {enemyReady ? (
+          <h3>{`${
+            activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
+          } is ready for battle!`}</h3>
+        ) : (
+          <h3 className="title">{`${
+            activePlayer === PLAYER.PLAYER1 ? "Player2" : "Player1"
+          } is getting ready!`}</h3>
+        )}
+      </div>
     </div>
   );
 };

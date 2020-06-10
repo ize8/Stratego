@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Button } from "react-bootstrap";
 import "../../style/App.css";
 import { nanoid } from "nanoid";
 
@@ -16,7 +14,7 @@ import {
   updateHand2,
   PLAYER
 } from "../../Store/actions";
-import { createNewRoom } from "../../Store/networkActions";
+import { createNewRoom, setMissedFightInfo } from "../../Store/networkActions";
 
 export const Home = () => {
   const dispatch = useDispatch();
@@ -87,33 +85,17 @@ hand item : {id: ID, highlighted:Bool, itemId:ID|null}
   };
 
   return (
-    <div className="App">
-      <h1 className="title">STRATEGO</h1>
-      <nav>
-        <Button
-          variant="primary"
-          size="lg"
-          block
-          className="Button"
-          onClick={startNewGame}
-        >
-          Start new game
-        </Button>
-        <Button
-          variant="primary"
-          size="lg"
-          block
-          className="Button"
-          onClick={joinRoom}
-        >
-          Join room
-        </Button>
-        <a href="http://www.ketaklub.hu/letoltes/Stratego%20Aoriginal%20Piatnik.pdf">
-          <Button variant="primary" size="lg" block className="Button">
-            Game rules
-          </Button>
-        </a>
-      </nav>
+    <div className="page">
+      <div className="pageContainer">
+        <h1 className="title">STRATEGO</h1>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <button onClick={startNewGame}>Start new game</button>
+          <button onClick={joinRoom}>Join room</button>
+          <a href="http://www.ketaklub.hu/letoltes/Stratego%20Aoriginal%20Piatnik.pdf">
+            <button>Game rules</button>
+          </a>
+        </div>
+      </div>
     </div>
   );
 };

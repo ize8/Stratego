@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Button } from "react-bootstrap";
 import { Board } from "../Board";
 import { Hand } from "../Hand";
 import { useSelector, useDispatch } from "react-redux";
@@ -73,6 +71,7 @@ export const Game = () => {
 
   //if a player looses all soldiers, then the other wins
   useEffect(() => {
+    if (waitingForEnemy) return;
     if (!hasMoves(PLAYER.PLAYER1)) console.log("player1 has no moves!");
     if (!hasMoves(PLAYER.PLAYER2)) console.log("player2 has no moves!");
     if (!hasMoves(PLAYER.PLAYER1))
@@ -345,54 +344,49 @@ export const Game = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center"
-      }}
-    >
-      {isItOver && (
-        <Victory
-          result={fightDetails.result}
-          onClick={() => dispatch(changeScreen(SCREEN.HOME))}
-        />
-      )}
-      {waitingForEnemy && <h2>Waiting for Enemy ...</h2>}
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <div>
-          {thereIsAFight && (
-            <Fight
-              attacker={fightDetails.attacker}
-              victim={fightDetails.victim}
-              result={fightDetails.result}
-            />
-          )}
-          {activePlayer === PLAYER.PLAYER2 && (
-            <Hand player={PLAYER.PLAYER2} onSelected={() => {}} />
-          )}
-          <Board
-            hidePlayer1={activePlayer === PLAYER.PLAYER2}
-            hidePlayer2={activePlayer === PLAYER.PLAYER1}
-            onClickedBoard={waitingForEnemy ? () => {} : onClickedBoard}
-            highlightedElements={highlighted}
+    <div className="page">
+      <div className="pageContainer">
+        {isItOver && (
+          <Victory
+            result={fightDetails.result}
+            onClick={() => dispatch(changeScreen(SCREEN.HOME))}
           />
-          {activePlayer === PLAYER.PLAYER1 && (
-            <Hand player={PLAYER.PLAYER1} onSelected={() => {}} />
-          )}
+        )}
+        {waitingForEnemy ? <h2>Waiting for Enemy ...</h2> : <h2>Your turn!</h2>}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center"
+          }}
+        >
+          <div style={{ position: "relative" }}>
+            {thereIsAFight && (
+              <Fight
+                attacker={fightDetails.attacker}
+                victim={fightDetails.victim}
+                result={fightDetails.result}
+              />
+            )}
+            {activePlayer === PLAYER.PLAYER2 && (
+              <Hand player={PLAYER.PLAYER2} onSelected={() => {}} />
+            )}
+            <Board
+              hidePlayer1={activePlayer === PLAYER.PLAYER2}
+              hidePlayer2={activePlayer === PLAYER.PLAYER1}
+              onClickedBoard={waitingForEnemy ? () => {} : onClickedBoard}
+              highlightedElements={highlighted}
+            />
+            {activePlayer === PLAYER.PLAYER1 && (
+              <Hand player={PLAYER.PLAYER1} onSelected={() => {}} />
+            )}
+          </div>
+          <HelpPanel />
         </div>
-        <HelpPanel />
+        <button style={{ width: "20rem" }} onClick={quitGame}>
+          Quit game
+        </button>
       </div>
-      <Button
-        variant="primary"
-        size="lg"
-        className="control"
-        style={{ alignSelf: "flex-start" }}
-        onClick={quitGame}
-      >
-        Quit game
-      </Button>
     </div>
   );
 };

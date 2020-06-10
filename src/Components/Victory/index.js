@@ -23,9 +23,9 @@ export const Victory = ({ result, ...props }) => {
           display: "block",
           position: "relative",
           margin: "auto",
-          width: "500px",
-          height: "300px",
-          top: "300px",
+          width: "50rem",
+          height: "20rem",
+          top: "10rem",
           left: "",
           border: "5px solid salmon",
           borderRadius: "20px",
@@ -40,10 +40,7 @@ export const Victory = ({ result, ...props }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "100%",
             height: "100%",
-            paddingRight: "15px",
-            paddingLeft: "15px",
             opacity: "1"
           }}
         >

@@ -74,7 +74,16 @@ export const HelpPanel = () => {
           justifyContent: "center"
         }}
       >
-        <span style={{ fontWeight: "bold", color: "gray" }}>?</span>
+        <span
+          style={{
+            fontFamily: "Arial",
+            fontSize: "15px",
+            fontWeight: "bold",
+            color: "gray"
+          }}
+        >
+          ?
+        </span>
       </div>
       {isOpen && (
         <div
