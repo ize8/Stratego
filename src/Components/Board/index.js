@@ -8,7 +8,8 @@ export const Board = ({
   onClickedBoard,
   highlightedElements = [],
   hidePlayer1 = false,
-  hidePlayer2 = false
+  hidePlayer2 = false,
+  ...props
 }) => {
   const board = useSelector(state => state.board.board);
   const boardDim = useSelector(state => state.app.boardDim);
@@ -45,24 +46,27 @@ export const Board = ({
           Player2
         </h2>
       )}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${boardDim.columns}, 50px)`,
-          gridTemplateRows: `repeat(${boardDim.rows}, 50px)`,
-          gap: "0px",
-          margin: "10px"
-        }}
-      >
-        {//Array.from(Array(boardDim.rows).keys()).map(row => createRow(row))
-        board.map(e => (
-          <Element
-            key={e.id}
-            id={e.id}
-            onSelect={() => onClickedBoard(e.row, e.col)}
-            highlighted={highlightedElements.includes(e.id)}
-          />
-        ))}
+      <div style={{ position: "relative" }}>
+        {props.children}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(${boardDim.columns}, 50px)`,
+            gridTemplateRows: `repeat(${boardDim.rows}, 50px)`,
+            gap: "0px",
+            margin: "10px"
+          }}
+        >
+          {//Array.from(Array(boardDim.rows).keys()).map(row => createRow(row))
+          board.map(e => (
+            <Element
+              key={e.id}
+              id={e.id}
+              onSelect={() => onClickedBoard(e.row, e.col)}
+              highlighted={highlightedElements.includes(e.id)}
+            />
+          ))}
+        </div>
       </div>
       {hidePlayer1 || (
         <h2

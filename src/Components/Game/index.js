@@ -86,21 +86,35 @@ export const Game = () => {
     }
   }, [missedFightInfo]);
 
-  //if a player looses all soldiers, then the other wins
-  useEffect(() => {
-    if (waitingForEnemy) return;
-    if (!hasMoves(PLAYER.PLAYER1)) console.log("player1 has no moves!");
-    if (!hasMoves(PLAYER.PLAYER2)) console.log("player2 has no moves!");
-    if (!hasMoves(PLAYER.PLAYER1))
+  const checkIfAnyMovesLeft = () => {
+    if (!hasMoves(PLAYER.PLAYER1)) {
+      console.log("player1 has no moves!");
       displayVictory({
         win: true,
         winner: PLAYER.PLAYER2
       });
-    if (!hasMoves(PLAYER.PLAYER2))
+      sendFightInfoToEnemy(roomNumber, {
+        win: true,
+        winner: PLAYER.PLAYER2
+      });
+    }
+    if (!hasMoves(PLAYER.PLAYER2)) {
+      console.log("player2 has no moves!");
       displayVictory({
         win: true,
         winner: PLAYER.PLAYER1
       });
+      sendFightInfoToEnemy(roomNumber, {
+        win: true,
+        winner: PLAYER.PLAYER1
+      });
+    }
+  };
+
+  //if a player looses all soldiers, then the other wins
+  useEffect(() => {
+    //if (waitingForEnemy) return;
+    checkIfAnyMovesLeft();
   }, [items]);
 
   const hasMoves = player =>
@@ -387,28 +401,6 @@ export const Game = () => {
           }}
         >
           <div style={{ position: "relative" }}>
-            {transitions.map(
-              ({ item, key, props }) =>
-                item && (
-                  <animated.div
-                    key={key}
-                    style={{
-                      ...props,
-                      zIndex: 10,
-                      display: "block",
-                      position: "absolute",
-                      top: "15rem",
-                      left: "auto"
-                    }}
-                  >
-                    <Fight
-                      attacker={fightDetails.attacker}
-                      victim={fightDetails.victim}
-                      result={fightDetails.result}
-                    />
-                  </animated.div>
-                )
-            )}
             {activePlayer === PLAYER.PLAYER2 && (
               <Hand player={PLAYER.PLAYER2} onSelected={() => {}} />
             )}
@@ -417,7 +409,30 @@ export const Game = () => {
               hidePlayer2={activePlayer === PLAYER.PLAYER1}
               onClickedBoard={waitingForEnemy ? () => {} : onClickedBoard}
               highlightedElements={highlighted}
-            />
+            >
+              {transitions.map(
+                ({ item, key, props }) =>
+                  item && (
+                    <animated.div
+                      key={key}
+                      style={{
+                        ...props,
+                        zIndex: 10,
+                        display: "block",
+                        position: "absolute",
+                        top: "50%",
+                        left: "20%"
+                      }}
+                    >
+                      <Fight
+                        attacker={fightDetails.attacker}
+                        victim={fightDetails.victim}
+                        result={fightDetails.result}
+                      />
+                    </animated.div>
+                  )
+              )}
+            </Board>
             {activePlayer === PLAYER.PLAYER1 && (
               <Hand player={PLAYER.PLAYER1} onSelected={() => {}} />
             )}
