@@ -6,6 +6,7 @@ import { Medal } from "../BoardIcon/Medal";
 import { Bomb } from "../BoardIcon/Bomb";
 import { Flag } from "react-feather";
 import { nanoid } from "nanoid";
+import { useTransition, animated } from "react-spring";
 
 const FightWithOutcome = ({ markdown }) => {
   return (
@@ -54,6 +55,21 @@ const FightWithOutcome = ({ markdown }) => {
 
 export const HelpPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
+  //CSS props to be animated
+  const transitions = useTransition(isOpen, null, {
+    from: {
+      opacity: 0,
+      transform: "scale(0,0)"
+    },
+    enter: {
+      opacity: 1,
+      transform: "scale(1,1)"
+    },
+    leave: {
+      opacity: 0,
+      transform: "scale(0,0)"
+    }
+  });
 
   return (
     <div
@@ -85,27 +101,32 @@ export const HelpPanel = () => {
           ?
         </span>
       </div>
-      {isOpen && (
-        <div
-          style={{
-            backgroundColor: "white",
-            border: "1px solid gray",
-            height: "200px",
-            padding: "5px",
-            display: "flex",
-            alignItems: "center",
-            marginTop: "5px"
-          }}
-        >
-          {/* prettier-ignore */}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-        <FightWithOutcome markdown={['soldier','sword','soldier','=','soldier','>','skull']}/>
-        <FightWithOutcome markdown={['[1]','sword','[10]','=','[1]','+','skull']}/>
-        <FightWithOutcome markdown={['soldier','sword','bomb','=','skull','+','bomb']}/>
-        <FightWithOutcome markdown={['[3]','sword','bomb','=','[3]','+','skull']}/>
-        <FightWithOutcome markdown={['soldier','sword','flag','=','medal']}/>
-      </div>
-        </div>
+      {transitions.map(
+        ({ item, key, props }) =>
+          item && (
+            <animated.div
+              key={key}
+              style={{
+                ...props,
+                backgroundColor: "white",
+                border: "1px solid gray",
+                height: "200px",
+                padding: "5px",
+                display: "flex",
+                alignItems: "center",
+                marginTop: "5px"
+              }}
+            >
+              {/* prettier-ignore */}
+              <div style={{ display: "flex", flexDirection: "column" }}>
+            <FightWithOutcome markdown={['soldier','sword','soldier','=','soldier','>','skull']}/>
+            <FightWithOutcome markdown={['[1]','sword','[10]','=','[1]','+','skull']}/>
+            <FightWithOutcome markdown={['soldier','sword','bomb','=','skull','+','bomb']}/>
+            <FightWithOutcome markdown={['[3]','sword','bomb','=','[3]','+','skull']}/>
+            <FightWithOutcome markdown={['soldier','sword','flag','=','medal']}/>
+          </div>
+            </animated.div>
+          )
       )}
     </div>
   );

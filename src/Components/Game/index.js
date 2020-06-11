@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTransition, animated } from "react-spring";
 import { Board } from "../Board";
 import { Hand } from "../Hand";
 import { useSelector, useDispatch } from "react-redux";
@@ -43,6 +44,21 @@ export const Game = () => {
     attacker: null,
     victim: null,
     result: null
+  });
+  //CSS props to be animated
+  const transitions = useTransition(thereIsAFight, null, {
+    from: {
+      opacity: 0,
+      transform: "scale(0,0)"
+    },
+    enter: {
+      opacity: 1,
+      transform: "scale(1,1)"
+    },
+    leave: {
+      opacity: 0,
+      transform: "scale(0,0)"
+    }
   });
 
   useEffect(() => {
@@ -371,12 +387,27 @@ export const Game = () => {
           }}
         >
           <div style={{ position: "relative" }}>
-            {thereIsAFight && (
-              <Fight
-                attacker={fightDetails.attacker}
-                victim={fightDetails.victim}
-                result={fightDetails.result}
-              />
+            {transitions.map(
+              ({ item, key, props }) =>
+                item && (
+                  <animated.div
+                    key={key}
+                    style={{
+                      ...props,
+                      zIndex: 10,
+                      display: "block",
+                      position: "absolute",
+                      top: "15rem",
+                      left: "auto"
+                    }}
+                  >
+                    <Fight
+                      attacker={fightDetails.attacker}
+                      victim={fightDetails.victim}
+                      result={fightDetails.result}
+                    />
+                  </animated.div>
+                )
             )}
             {activePlayer === PLAYER.PLAYER2 && (
               <Hand player={PLAYER.PLAYER2} onSelected={() => {}} />

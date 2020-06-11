@@ -12,16 +12,11 @@ export const Fight = ({ attacker, victim, result }) => {
   return (
     <div
       style={{
-        display: "block",
-        position: "absolute",
         width: "10rem",
         height: "2.5rem",
-        top: "15rem",
-        left: "auto",
         backgroundColor: "floralwhite",
         border: "5px solid salmon",
         borderRadius: "20px",
-        zIndex: 10,
         boxShadow: "-5px 5px 8px black"
       }}
     >
