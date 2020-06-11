@@ -41,6 +41,10 @@ export default function App() {
         dispatch(setSocketIoCient(socket));
       });
 
+      socket.on("disconnect", function() {
+        alert(`Lost connection with server!\nPlease restart game!`);
+      });
+
       socket.on("room-is-full", data => {
         console.log("Room is full!", data); // true
       });
@@ -58,6 +62,7 @@ export default function App() {
 
       socket.on("player-left", data => {
         console.log("Player left:", data); // true
+        alert("Unfortunately your enemy ran away! ...");
       });
 
       socket.on("action-sent", data => {
@@ -99,6 +104,10 @@ export default function App() {
     console.log("...init App...");
     if (!socketio || !socketio.connected) connectToServer();
   }, []);
+
+  useEffect(() => {
+    console.log("Socket.IO connected", socketio.connected);
+  }, [socketio.connected]);
 
   const getScreenComponent = id => {
     switch (id) {
